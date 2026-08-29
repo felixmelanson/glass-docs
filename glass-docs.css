@@ -1,0 +1,612 @@
+/* Glass Docs — Zen Boost
+   Firefox + a transparent window compositor. Docs paints nothing;
+   the desktop shows through and only the page stays opaque.
+   Accent: #c24700
+
+   Order matters: the border/pseudo sweep runs first so later blocks
+   can put borders back on purpose instead of fighting it.
+
+   Two things that cost me an evening each:
+   - `background` (shorthand) or `background-image: none` on anything
+     below a top-level container nukes the icon sprites. background-color only.
+   - backdrop-filter over a transparent region makes Gecko sample the
+     base canvas and hand back solid grey. Don't. */
+
+
+/* Root ------------------------------------------------------------ */
+/* Gecko still paints body even with every Docs container cleared. */
+
+html,
+body.docs-gm {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+
+/* Sweep: borders -------------------------------------------------- */
+/* Transparent background != no border. #docs-chrome held onto its
+   bottom hairline through every background pass. */
+
+#docs-chrome,
+#docs-header,
+#docs-header-container,
+#docs-bars,
+#docs-menubars,
+#docs-toolbar-wrapper,
+#docs-primary-toolbars,
+#docs-toolbar,
+#docs-side-toolbar,
+#docs-banner-container,
+#docs-banners,
+#docs-recommendation-banner-container,
+#docs-feature-level-banner,
+#docs-inset-notification-banner,
+#docs-additional-bars,
+#docs-chrome-cover-container,
+#kix-horizontal-ruler-container,
+#kix-vertical-ruler-container,
+#kix-horizontal-ruler,
+#kix-vertical-ruler,
+.docs-horizontal-ruler,
+.docs-vertical-ruler,
+.kix-appview,
+.kix-appview-editor,
+.kix-appview-editor-container {
+  border: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+
+/* Sweep: pseudo-elements ------------------------------------------ */
+/* Not in the DOM, so the sweep above never touches them.
+   #kix-vertical-ruler::before was the last white line standing. */
+
+#kix-vertical-ruler::before,
+#kix-vertical-ruler::after,
+#kix-horizontal-ruler::before,
+#kix-horizontal-ruler::after,
+#kix-vertical-ruler-container::before,
+#kix-vertical-ruler-container::after,
+#kix-horizontal-ruler-container::before,
+#kix-horizontal-ruler-container::after,
+#docs-chrome::before,
+#docs-chrome::after {
+  opacity: 0 !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+
+/* Header ---------------------------------------------------------- */
+
+#docs-chrome,
+#docs-header,
+#docs-titlebar-container,
+#docs-titlebar,
+.docs-titlebar-buttons,
+#docs-branding-container,
+.docs-title-outer,
+#docs-title-widget,
+#docs-header-container,
+#docs-bars,
+#docs-menubars {
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
+}
+
+/* Docs stacks a label on top of the title input and renders both.
+   Dropping the label is the only thing that stops the ghosting.
+   Star, folder and save indicator ride along. */
+.docs-title-input-label,
+.docs-title-input-label-inner,
+.docs-titlebar-badges,
+#docs-parent-collections-container-outer,
+.docs-parent-collections-container-outer,
+#docs-star,
+#docs-folder,
+#docs-save-indicator-container,
+.docs-activity-indicator-container {
+  display: none !important;
+}
+
+#docs-title-input,
+input.docs-title-input {
+  color: #e8e8e8 !important;
+  background-color: transparent !important;
+  border-color: transparent !important;
+  width: auto !important;
+  min-width: 240px !important;
+  visibility: visible !important;
+}
+#docs-title-input:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  border-radius: 3px !important;
+}
+
+/* Bye */
+#docs-gemini-menu,
+#docs-help-menu {
+  display: none !important;
+}
+
+#docs-menubar .menu-button,
+#docs-menubar .goog-control,
+.docs-menubar .menu-button-caption,
+.docs-menubar .goog-control-content,
+div#docs-menubar .goog-inline-block {
+  color: #b0b0b0 !important;
+  background-color: transparent !important;
+}
+#docs-menubar .menu-button-hover,
+#docs-menubar .goog-control-hover {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+  border-radius: 3px !important;
+}
+
+/* Share, quick actions, history, comments, sidekick, upsells.
+   None of it earns the space. */
+#docs-titlebar-share-client-button,
+#scb-quick-actions-menu-button,
+#docs-revisions-appbarbutton,
+#docs-docos-commentsbutton,
+#docs-sidekick-button-container,
+.docsRecommendationsPepPersistentEntryPointContainer,
+.onegoogle-material-minibar {
+  display: none !important;
+}
+
+
+/* Compact header -------------------------------------------------- */
+/* Menubar comes out of flow and sits on the title row. Has to be
+   position:absolute — negative margins get measured by Docs' header
+   height logic and it reflows the badges back in.
+   `left` is tuned to my window width, nudge it to taste. */
+
+#docs-branding-container {
+  transform: scale(0.65) !important;
+  transform-origin: top !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+#docs-header-container {
+  position: relative !important;
+}
+#docs-menubars {
+  position: absolute !important;
+  top: -40px !important;
+  left: 1055px !important;
+  right: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: auto !important;
+  z-index: 10 !important;
+  pointer-events: auto !important;
+}
+#docs-menubar {
+  max-width: none !important;
+  pointer-events: auto !important;
+}
+
+
+/* Toolbar --------------------------------------------------------- */
+
+#docs-toolbar-wrapper,
+#docs-primary-toolbars,
+#docs-toolbar,
+#docs-side-toolbar {
+  background-color: transparent !important;
+  border-radius: 4px !important;
+}
+
+/* Only real fill in the theme — keeps the row readable over a busy
+   wallpaper. Drop to 0 for full glass. */
+#docs-toolbar-wrapper {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.goog-toolbar-button,
+.goog-toolbar-menu-button,
+.goog-toolbar-combo-button,
+.goog-toolbar-toggle-button {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border-radius: 4px !important;
+}
+.goog-toolbar-button-hover,
+.goog-toolbar-menu-button-hover,
+.goog-toolbar-combo-button-hover {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+  border-radius: 4px !important;
+}
+.goog-toolbar-separator,
+.docs-toolbar-small-separator {
+  border-left: 1px solid rgba(255, 255, 255, 0.5) !important;
+  background-color: transparent !important;
+}
+
+/* Docs' pressed-state navy is invisible on a dark backdrop, so:
+   brighter white fill, icon knocked out to solid white. */
+.goog-toolbar-button-checked,
+.goog-toolbar-toggle-button-checked,
+.goog-toolbar-button-selected,
+.goog-toolbar-button-active,
+.goog-toolbar-menu-button-active,
+.goog-toolbar-combo-button-active,
+#docs-toolbar-wrapper [aria-pressed="true"] {
+  background-color: rgba(255, 255, 255, 0.22) !important;
+  border-radius: 4px !important;
+  color: #ffffff !important;
+}
+.goog-toolbar-button-checked .docs-icon-img,
+.goog-toolbar-toggle-button-checked .docs-icon-img,
+#docs-toolbar-wrapper [aria-pressed="true"] .docs-icon-img {
+  filter: brightness(0) invert(1) !important;
+  opacity: 1 !important;
+}
+
+#docs-toolbar-wrapper .goog-toolbar-button,
+#docs-toolbar-wrapper .goog-toolbar-menu-button,
+#docs-toolbar-wrapper .goog-toolbar-combo-button,
+#docs-toolbar-wrapper [role="button"],
+#docs-toolbar-wrapper div,
+#docs-toolbar-wrapper span {
+  color: #969696 !important;
+  opacity: 1 !important;
+}
+
+/* Labels a notch brighter so they carry the same weight as the icons
+   instead of sinking under them. */
+#docs-toolbar-wrapper .goog-toolbar-combo-button-input,
+#docs-toolbar-wrapper .goog-toolbar-menu-button-caption,
+#docs-toolbar-wrapper .goog-toolbar-button-content,
+#docs-toolbar-wrapper .goog-toolbar-menu-button-label,
+#docs-toolbar-wrapper input,
+#zoomSelect .goog-toolbar-combo-button-input,
+#fontSizeSelect .goog-toolbar-combo-button-input,
+#headingStyleSelect .goog-toolbar-menu-button-caption,
+#docs-font-family .goog-toolbar-menu-button-caption {
+  color: #d4d4d4 !important;
+  opacity: 1 !important;
+}
+
+/* Icons are dark grey sprites, so `color` does nothing. Inverting
+   gives light grey, which survives both a dark and a light wallpaper.
+   Push brightness toward 0.7 if they burn.
+   The ID keeps this above the class-only pressed rule; the pressed
+   re-assert at the bottom puts that back on top. */
+#docs-toolbar-wrapper .docs-icon-img,
+#docs-toolbar-wrapper .goog-toolbar-button .docs-icon-img,
+#docs-toolbar-wrapper .goog-toolbar-menu-button .docs-icon-img {
+  filter: invert(1) brightness(0.85) !important;
+  opacity: 1 !important;
+}
+
+/* Text/highlight swatches are real colour, not sprites — inverting
+   them lies about what's selected. */
+#docs-toolbar-wrapper [class*="color-indicator"],
+#docs-toolbar-wrapper [class*="colorindicator"],
+#docs-toolbar-wrapper .goog-toolbar-button-inner-box [style*="background-color"] {
+  filter: none !important;
+}
+
+#docs-toolbar-wrapper .goog-toolbar-button-checked .docs-icon-img,
+#docs-toolbar-wrapper .goog-toolbar-toggle-button-checked .docs-icon-img,
+#docs-toolbar-wrapper [aria-pressed="true"] .docs-icon-img {
+  filter: brightness(0) invert(1) !important;
+}
+
+
+/* Omnibox --------------------------------------------------------- */
+
+#docs-omnibox-toolbar,
+.docs-omnibox-autocomplete,
+.docs-omnibox-input,
+input.docs-omnibox-input {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #ffffff !important;
+}
+input.docs-omnibox-input::placeholder {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+.docs-omnibox-autocomplete:hover,
+#docs-omnibox-toolbar:hover {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+  border-radius: 4px !important;
+}
+
+
+/* Rulers ---------------------------------------------------------- */
+/* Two rules here. Never blanket-match [class*="ruler"] — the ticks
+   are .docs-ruler-face-*-division elements, so it eats the thing
+   you're cleaning. And never set background-color on a division:
+   the ticks are borders, a fill doubles them. */
+
+.docs-ruler,
+.docs-ruler-inner,
+.docs-ruler-background,
+.docs-ruler-background-inner,
+.docs-ruler-mask {
+  background: transparent !important;
+  background-color: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Opacity on the face is the only safe way to dim border-drawn ticks. */
+.docs-ruler-face-inner {
+  opacity: 0.6 !important;
+}
+.docs-ruler-face-number {
+  display: none !important;
+}
+
+/* Out-of-margin regions are 96px blocks, not lines — any fill reads
+   as two big slabs. */
+.docs-ruler-margin-start,
+.docs-ruler-margin-end {
+  background: transparent !important;
+  background-color: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.docs-vertical-ruler-active-indicators,
+.docs-vertical-ruler-active-indicators-inner {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+.docs-vertical-ruler-active-indicator {
+  background-color: #585859 !important;
+}
+
+/* Indent/tab markers are blue sprites, so no setting the colour —
+   rotate the hue. 0/360 is stock blue, 180 gives orange, this lands
+   on dark turquoise. Delete the block to revert. */
+.docs-ruler-indent-first-line .docs-icon-img,
+.docs-ruler-indent-start .docs-icon-img,
+.docs-ruler-indent-end .docs-icon-img,
+.docs-ruler-face-tick-mark,
+[class*="tabstop"] .docs-icon-img,
+[class*="indentmarker"] .docs-icon-img {
+  filter: hue-rotate(320deg) saturate(1) brightness(0.7) !important;
+  opacity: 1 !important;
+}
+
+
+/* Canvas and page ------------------------------------------------- */
+
+#docs-editor,
+#docs-chrome,
+#docs-editor-container,
+.kix-appview-editor,
+.kix-appview-editor-container,
+#kix-appview,
+.docs-editor-container {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Page keeps its white fill, loses the shadow — sits flat on the
+   wallpaper instead of floating on grey. */
+.kix-page-paginated,
+.kix-page-paginated .kix-canvas-tile-content {
+  box-shadow: none !important;
+  border: none !important;
+  outline: none !important;
+}
+
+
+/* Scrollbars ------------------------------------------------------ */
+/* No ::-webkit-scrollbar on Gecko. Docs also sets a non-auto
+   scrollbar-color on its scrollers, which is why the webkit pseudos
+   were getting ignored in the first place. */
+
+html,
+body,
+*,
+.kix-appview-editor,
+#kix-appview,
+.navigation-widget,
+.left-sidebar-container-content,
+.kix-scrollbararea {
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent !important;
+}
+.kix-scrollbararea,
+.kix-scrollbarwidget {
+  background-color: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+
+/* Tabs sidebar ---------------------------------------------------- */
+
+.left-sidebar-container,
+.left-sidebar-container-content,
+.navigation-widget,
+.navigation-widget-content,
+.navigation-widget-hat,
+.outlines-widget,
+.outlines-widget-chaptered,
+.chapter-container,
+[id^="chapter-container"],
+.topLevelChapterContainerChaptered,
+.kix-outlines-widget-header-container,
+.kix-outlines-widget-header-contents,
+.kix-outlines-widget-header-shadow,
+#navigation-widget-top-shadow {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
+}
+
+/* The panel is painted from GM3 tokens, so clearing background on the
+   element alone leaves the fill coming back from further up. */
+.navigation-widget,
+.left-sidebar-container {
+  --gm3-sys-color-surface: transparent !important;
+  --gm3-sys-color-surface-container: transparent !important;
+  --gm3-sys-color-surface-container-low: transparent !important;
+  --gm3-sys-color-surface-container-high: transparent !important;
+  --gm3-sys-color-surface-container-highest: transparent !important;
+}
+
+/* Pinned open. Docs animates it away on mouseout, hence nailing down
+   both transform and transition. */
+.navigation-widget {
+  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+  transition: none !important;
+  pointer-events: auto !important;
+}
+
+.chapter-item-label,
+.chapter-label-content,
+#kix-outlines-widget-header-text-chaptered,
+.kix-outlines-widget-header-text-unchaptered {
+  color: #969696 !important;
+  background-color: transparent !important;
+}
+.chapter-item-label-and-buttons-container:hover {
+  background-color: rgba(255, 255, 255, 0.10) !important;
+  border-radius: 4px !important;
+}
+.chapter-item-label-and-buttons-container-selected {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border-radius: 4px !important;
+}
+.chapter-item-label-and-buttons-container-selected .chapter-label-content {
+  color: #b3b3b3 !important;
+}
+
+/* Half invert, not full — otherwise these outshine the labels. */
+.navigation-widget .docs-icon-img,
+.navigation-widget-hide-control-container .docs-icon-img,
+.kix-outlines-widget-header-add-chapter-button .docs-icon-img,
+.chapter-overflow-menu-button .docs-icon-img,
+.chapterItemIconContainer .docs-icon-img {
+  filter: invert(0.5) brightness(1) !important;
+  opacity: 1 !important;
+}
+
+.navigation-widget-empty,
+.navigation-widget-empty-content {
+  display: none !important;
+}
+
+/* Per-tab overflow button. The blue sits on the wrapper chain, not on
+   the inner [role=button], and GM3 paints hover as a state layer on
+   top of that. So: elements, then pseudos, then hover by hand. */
+.chapter-item-buttons,
+.chapter-item-buttons > div,
+.chapter-overflow-menu-button,
+.chapter-overflow-menu-button > div,
+.chapter-overflow-menu-button [role="button"],
+.chapter-overflow-menu-button .goog-button,
+.chapter-overflow-menu-button .goog-flat-button {
+  background-color: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  border-radius: 4px !important;
+}
+
+.chapter-item-buttons > div::before,
+.chapter-item-buttons > div::after,
+.chapter-overflow-menu-button::before,
+.chapter-overflow-menu-button::after,
+.chapter-overflow-menu-button > div::before,
+.chapter-overflow-menu-button > div::after,
+.chapter-item-label-and-buttons-container::before,
+.chapter-item-label-and-buttons-container::after {
+  background-color: transparent !important;
+  opacity: 0 !important;
+}
+
+/* Accent lives here. Override the element without these and the blue
+   repaints on the next hover. */
+.navigation-widget,
+.chapter-container,
+.chapter-item-label-and-buttons-container {
+  --gm3-sys-color-secondary-container: rgba(255, 255, 255, 0.10) !important;
+  --gm3-sys-color-on-secondary-container: #d0d0d0 !important;
+  --gm3-sys-color-primary: #c24700 !important;
+  --gm3-sys-color-primary-container: rgba(255, 255, 255, 0.10) !important;
+  --gm3-sys-color-surface-variant: transparent !important;
+  --gm3-sys-color-on-surface: #b0b0b0 !important;
+  --gm3-sys-color-on-surface-variant: #969696 !important;
+}
+
+.chapter-overflow-menu-button:hover,
+.chapter-item-buttons > div:hover {
+  background-color: rgba(255, 255, 255, 0.14) !important;
+  border-radius: 4px !important;
+}
+
+/* Collapsed mini chapter-switcher pill */
+[class*="MiniChapterSwitcherSurface"],
+[class*="MiniChapterSwitcherSurface"] button {
+  background-color: rgba(255, 255, 255, 0.10) !important;
+  color: #cfcfcf !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  border-radius: 999px !important;
+  box-shadow: none !important;
+}
+[class*="MiniChapterSwitcherSurface"] span {
+  background-color: transparent !important;
+  color: #cfcfcf !important;
+}
+[class*="MiniChapterSwitcherSurface"] .docs-icon-img {
+  filter: invert(1) brightness(0.8) !important;
+}
+[class*="MiniChapterSwitcherSurface"] button:hover {
+  background-color: rgba(255, 255, 255, 0.18) !important;
+}
+
+
+/* Right rail (companion app switcher) ----------------------------- */
+/* .companion-collapser-button is deliberately unstyled. It was ugly. */
+
+.docs-companion-app-switcher-container,
+.companion-app-switcher-container,
+.companion-app-switcher-guest-container,
+.companion-guest-app-switcher,
+.companion-collapser-button-container,
+.app-switcher-button-icon-background,
+.app-switcher-button-icon-background-outer,
+.app-switcher-button-icon-background-inner {
+  background: transparent !important;
+  background-color: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+.agca-gab-button,
+.app-switcher-button {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+.agca-gab-button:hover .app-switcher-button-icon-background,
+.app-switcher-button:hover .app-switcher-button-icon-background {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+}
+.companion-app-switcher-separator {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  background-color: transparent !important;
+}
