@@ -26,5 +26,3 @@ page.
 
 [NOTES.md](NOTES.md) covers tuning, what's hidden, and how the stylesheet gets
 around Docs.
-
-MIT
