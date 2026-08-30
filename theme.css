@@ -1,20 +1,9 @@
 /* Glass Docs — Zen Boost
-   Firefox + a transparent window compositor. Docs paints nothing;
-   the desktop shows through and only the page stays opaque.
-   Accent: #c24700
-
-   Order matters: the border/pseudo sweep runs first so later blocks
-   can put borders back on purpose instead of fighting it.
-
-   Two things that cost me an evening each:
-   - `background` (shorthand) or `background-image: none` on anything
-     below a top-level container nukes the icon sprites. background-color only.
-   - backdrop-filter over a transparent region makes Gecko sample the
-     base canvas and hand back solid grey. Don't. */
+   Paste this entire file into the Boost { } editor.
+   Accent: #c24700 */
 
 
-/* Root ------------------------------------------------------------ */
-/* Gecko still paints body even with every Docs container cleared. */
+/* Root */
 
 html,
 body.docs-gm {
@@ -23,9 +12,7 @@ body.docs-gm {
 }
 
 
-/* Sweep: borders -------------------------------------------------- */
-/* Transparent background != no border. #docs-chrome held onto its
-   bottom hairline through every background pass. */
+/* Borders */
 
 #docs-chrome,
 #docs-header,
@@ -62,9 +49,7 @@ body.docs-gm {
 }
 
 
-/* Sweep: pseudo-elements ------------------------------------------ */
-/* Not in the DOM, so the sweep above never touches them.
-   #kix-vertical-ruler::before was the last white line standing. */
+/* Pseudo-elements */
 
 #kix-vertical-ruler::before,
 #kix-vertical-ruler::after,
@@ -83,7 +68,7 @@ body.docs-gm {
 }
 
 
-/* Header ---------------------------------------------------------- */
+/* Header */
 
 #docs-chrome,
 #docs-header,
@@ -102,9 +87,7 @@ body.docs-gm {
   border-color: transparent !important;
 }
 
-/* Docs stacks a label on top of the title input and renders both.
-   Dropping the label is the only thing that stops the ghosting.
-   Star, folder and save indicator ride along. */
+/* Title label layer, star, folder, save indicator */
 .docs-title-input-label,
 .docs-title-input-label-inner,
 .docs-titlebar-badges,
@@ -131,7 +114,7 @@ input.docs-title-input {
   border-radius: 3px !important;
 }
 
-/* Bye */
+/* Gemini, Help */
 #docs-gemini-menu,
 #docs-help-menu {
   display: none !important;
@@ -151,8 +134,7 @@ div#docs-menubar .goog-inline-block {
   border-radius: 3px !important;
 }
 
-/* Share, quick actions, history, comments, sidekick, upsells.
-   None of it earns the space. */
+/* Share, quick actions, history, comments, sidekick, upsells */
 #docs-titlebar-share-client-button,
 #scb-quick-actions-menu-button,
 #docs-revisions-appbarbutton,
@@ -164,14 +146,10 @@ div#docs-menubar .goog-inline-block {
 }
 
 
-/* Compact header -------------------------------------------------- */
-/* Menubar comes out of flow and sits on the title row. Has to be
-   position:absolute — negative margins get measured by Docs' header
-   height logic and it reflows the badges back in.
-   `left` is tuned to my window width, nudge it to taste. */
+/* Compact header */
 
 #docs-branding-container {
-  transform: scale(0.65) !important;
+  transform: scale(0.65) !important; /* header scale */
   transform-origin: top !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -182,7 +160,7 @@ div#docs-menubar .goog-inline-block {
 #docs-menubars {
   position: absolute !important;
   top: -40px !important;
-  left: 1055px !important;
+  left: 1055px !important; /* match your window width */
   right: auto !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -196,7 +174,7 @@ div#docs-menubar .goog-inline-block {
 }
 
 
-/* Toolbar --------------------------------------------------------- */
+/* Toolbar */
 
 #docs-toolbar-wrapper,
 #docs-primary-toolbars,
@@ -205,11 +183,8 @@ div#docs-menubar .goog-inline-block {
   background-color: transparent !important;
   border-radius: 4px !important;
 }
-
-/* Only real fill in the theme — keeps the row readable over a busy
-   wallpaper. Drop to 0 for full glass. */
 #docs-toolbar-wrapper {
-  background-color: rgba(255, 255, 255, 0.05) !important;
+  background-color: rgba(255, 255, 255, 0.05) !important; /* glass strength, 0 for none */
 }
 
 .goog-toolbar-button,
@@ -232,8 +207,7 @@ div#docs-menubar .goog-inline-block {
   background-color: transparent !important;
 }
 
-/* Docs' pressed-state navy is invisible on a dark backdrop, so:
-   brighter white fill, icon knocked out to solid white. */
+/* Pressed */
 .goog-toolbar-button-checked,
 .goog-toolbar-toggle-button-checked,
 .goog-toolbar-button-selected,
@@ -262,8 +236,7 @@ div#docs-menubar .goog-inline-block {
   opacity: 1 !important;
 }
 
-/* Labels a notch brighter so they carry the same weight as the icons
-   instead of sinking under them. */
+/* Labels */
 #docs-toolbar-wrapper .goog-toolbar-combo-button-input,
 #docs-toolbar-wrapper .goog-toolbar-menu-button-caption,
 #docs-toolbar-wrapper .goog-toolbar-button-content,
@@ -277,20 +250,15 @@ div#docs-menubar .goog-inline-block {
   opacity: 1 !important;
 }
 
-/* Icons are dark grey sprites, so `color` does nothing. Inverting
-   gives light grey, which survives both a dark and a light wallpaper.
-   Push brightness toward 0.7 if they burn.
-   The ID keeps this above the class-only pressed rule; the pressed
-   re-assert at the bottom puts that back on top. */
+/* Icons */
 #docs-toolbar-wrapper .docs-icon-img,
 #docs-toolbar-wrapper .goog-toolbar-button .docs-icon-img,
 #docs-toolbar-wrapper .goog-toolbar-menu-button .docs-icon-img {
-  filter: invert(1) brightness(0.85) !important;
+  filter: invert(1) brightness(0.85) !important; /* lower brightness if they burn */
   opacity: 1 !important;
 }
 
-/* Text/highlight swatches are real colour, not sprites — inverting
-   them lies about what's selected. */
+/* Colour swatches keep their real colour */
 #docs-toolbar-wrapper [class*="color-indicator"],
 #docs-toolbar-wrapper [class*="colorindicator"],
 #docs-toolbar-wrapper .goog-toolbar-button-inner-box [style*="background-color"] {
@@ -304,7 +272,7 @@ div#docs-menubar .goog-inline-block {
 }
 
 
-/* Omnibox --------------------------------------------------------- */
+/* Omnibox */
 
 #docs-omnibox-toolbar,
 .docs-omnibox-autocomplete,
@@ -325,11 +293,7 @@ input.docs-omnibox-input::placeholder {
 }
 
 
-/* Rulers ---------------------------------------------------------- */
-/* Two rules here. Never blanket-match [class*="ruler"] — the ticks
-   are .docs-ruler-face-*-division elements, so it eats the thing
-   you're cleaning. And never set background-color on a division:
-   the ticks are borders, a fill doubles them. */
+/* Rulers */
 
 .docs-ruler,
 .docs-ruler-inner,
@@ -342,16 +306,13 @@ input.docs-omnibox-input::placeholder {
   box-shadow: none !important;
 }
 
-/* Opacity on the face is the only safe way to dim border-drawn ticks. */
 .docs-ruler-face-inner {
-  opacity: 0.6 !important;
+  opacity: 0.6 !important; /* tick contrast */
 }
 .docs-ruler-face-number {
   display: none !important;
 }
 
-/* Out-of-margin regions are 96px blocks, not lines — any fill reads
-   as two big slabs. */
 .docs-ruler-margin-start,
 .docs-ruler-margin-end {
   background: transparent !important;
@@ -369,21 +330,19 @@ input.docs-omnibox-input::placeholder {
   background-color: #585859 !important;
 }
 
-/* Indent/tab markers are blue sprites, so no setting the colour —
-   rotate the hue. 0/360 is stock blue, 180 gives orange, this lands
-   on dark turquoise. Delete the block to revert. */
+/* Indent and tab markers */
 .docs-ruler-indent-first-line .docs-icon-img,
 .docs-ruler-indent-start .docs-icon-img,
 .docs-ruler-indent-end .docs-icon-img,
 .docs-ruler-face-tick-mark,
 [class*="tabstop"] .docs-icon-img,
 [class*="indentmarker"] .docs-icon-img {
-  filter: hue-rotate(320deg) saturate(1) brightness(0.7) !important;
+  filter: hue-rotate(320deg) saturate(1) brightness(0.7) !important; /* 0deg = stock blue */
   opacity: 1 !important;
 }
 
 
-/* Canvas and page ------------------------------------------------- */
+/* Canvas */
 
 #docs-editor,
 #docs-chrome,
@@ -396,8 +355,6 @@ input.docs-omnibox-input::placeholder {
   background-color: transparent !important;
 }
 
-/* Page keeps its white fill, loses the shadow — sits flat on the
-   wallpaper instead of floating on grey. */
 .kix-page-paginated,
 .kix-page-paginated .kix-canvas-tile-content {
   box-shadow: none !important;
@@ -406,10 +363,7 @@ input.docs-omnibox-input::placeholder {
 }
 
 
-/* Scrollbars ------------------------------------------------------ */
-/* No ::-webkit-scrollbar on Gecko. Docs also sets a non-auto
-   scrollbar-color on its scrollers, which is why the webkit pseudos
-   were getting ignored in the first place. */
+/* Scrollbars */
 
 html,
 body,
@@ -430,7 +384,7 @@ body,
 }
 
 
-/* Tabs sidebar ---------------------------------------------------- */
+/* Tabs sidebar */
 
 .left-sidebar-container,
 .left-sidebar-container-content,
@@ -455,8 +409,6 @@ body,
   border-color: transparent !important;
 }
 
-/* The panel is painted from GM3 tokens, so clearing background on the
-   element alone leaves the fill coming back from further up. */
 .navigation-widget,
 .left-sidebar-container {
   --gm3-sys-color-surface: transparent !important;
@@ -466,8 +418,7 @@ body,
   --gm3-sys-color-surface-container-highest: transparent !important;
 }
 
-/* Pinned open. Docs animates it away on mouseout, hence nailing down
-   both transform and transition. */
+/* Pinned open */
 .navigation-widget {
   border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
   opacity: 1 !important;
@@ -496,7 +447,6 @@ body,
   color: #b3b3b3 !important;
 }
 
-/* Half invert, not full — otherwise these outshine the labels. */
 .navigation-widget .docs-icon-img,
 .navigation-widget-hide-control-container .docs-icon-img,
 .kix-outlines-widget-header-add-chapter-button .docs-icon-img,
@@ -511,9 +461,7 @@ body,
   display: none !important;
 }
 
-/* Per-tab overflow button. The blue sits on the wrapper chain, not on
-   the inner [role=button], and GM3 paints hover as a state layer on
-   top of that. So: elements, then pseudos, then hover by hand. */
+/* Overflow button */
 .chapter-item-buttons,
 .chapter-item-buttons > div,
 .chapter-overflow-menu-button,
@@ -539,14 +487,12 @@ body,
   opacity: 0 !important;
 }
 
-/* Accent lives here. Override the element without these and the blue
-   repaints on the next hover. */
 .navigation-widget,
 .chapter-container,
 .chapter-item-label-and-buttons-container {
   --gm3-sys-color-secondary-container: rgba(255, 255, 255, 0.10) !important;
   --gm3-sys-color-on-secondary-container: #d0d0d0 !important;
-  --gm3-sys-color-primary: #c24700 !important;
+  --gm3-sys-color-primary: #c24700 !important; /* accent */
   --gm3-sys-color-primary-container: rgba(255, 255, 255, 0.10) !important;
   --gm3-sys-color-surface-variant: transparent !important;
   --gm3-sys-color-on-surface: #b0b0b0 !important;
@@ -559,7 +505,7 @@ body,
   border-radius: 4px !important;
 }
 
-/* Collapsed mini chapter-switcher pill */
+/* Collapsed switcher pill */
 [class*="MiniChapterSwitcherSurface"],
 [class*="MiniChapterSwitcherSurface"] button {
   background-color: rgba(255, 255, 255, 0.10) !important;
@@ -580,8 +526,7 @@ body,
 }
 
 
-/* Right rail (companion app switcher) ----------------------------- */
-/* .companion-collapser-button is deliberately unstyled. It was ugly. */
+/* Right rail */
 
 .docs-companion-app-switcher-container,
 .companion-app-switcher-container,
