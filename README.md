@@ -20,7 +20,7 @@ theme, I made this stylesheet to bypass these constraints.
 2. Open the Code `{ }` editor and paste all of [`theme.css`](theme.css)
 
 Recommended: for a darker look, install the
-[Transparent Zen mod](https://zen-browser.app/mods/). It doesn't have to be
+[Transparent Zen mod](https://zen-browser.app/mods/642854b5-88b4-4c40-b256-e035532109df/?q=transparent). It doesn't have to be
 enabled on Google Docs; it removes the base canvas Gecko paints under every
 page.
 
